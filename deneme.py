@@ -1,0 +1,1 @@
+aykutelmas = "özelhocaözelhocaözelhocaözelhocaözelhoca"

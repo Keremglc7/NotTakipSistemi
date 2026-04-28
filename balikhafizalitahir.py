@@ -1,0 +1,1 @@
+print("balık hafızalı tahir")

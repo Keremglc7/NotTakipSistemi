@@ -1,1 +1,0 @@
-aykutelmas = "özelhocaözelhocaözelhocaözelhocaözelhoca"

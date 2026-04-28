@@ -1,1 +1,0 @@
-print("balık hafızalı tahir")

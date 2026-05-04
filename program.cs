@@ -7,11 +7,10 @@ while (true)
 {
     Console.WriteLine("\n--- NOT TAKİP SİSTEMİ ---");
     Console.WriteLine("1. Yeni Not Ekle");
-    Console.WriteLine("2. Notları Oku");
+    Console.WriteLine("2. Notları ve Ortalamayı Gör");
     Console.WriteLine("3. Notları Temizle (Tümünü Sil)");
-    Console.WriteLine("4. Ortalama Göster");
-    Console.WriteLine("5. Çıkış");
-    Console.Write("Seçiminiz (1/2/3/4/5): ");
+    Console.WriteLine("4. Çıkış");
+    Console.Write("Seçiminiz (1/2/3/4): ");
 
     string secim = Console.ReadLine();
 
@@ -21,17 +20,13 @@ while (true)
     }
     else if (secim == "2")
     {
-        NotlariOku(dosyaYolu);
+        NotlariOkuVeOrtalama(dosyaYolu);
     }
     else if (secim == "3")
     {
         NotlariSil(dosyaYolu);
     }
     else if (secim == "4")
-    {
-        OrtalamaGoster(dosyaYolu);
-    }
-    else if (secim == "5")
     {
         Console.WriteLine("Sistemden çıkılıyor.");
         break;
@@ -61,7 +56,7 @@ static void NotEkle(string yol)
     }
 }
 
-static void NotlariOku(string yol)
+static void NotlariOkuVeOrtalama(string yol)
 {
     if (File.Exists(yol))
     {
@@ -74,11 +69,17 @@ static void NotlariOku(string yol)
         }
 
         Console.WriteLine("\n--- KAYITLI NOTLAR ---");
+        int toplamNot = 0;
+
         for (int i = 0; i < satirlar.Length; i++)
         {
             string[] parcalar = satirlar[i].Split('|');
             Console.WriteLine((i + 1) + "- Ders: " + parcalar[0] + " | Not: " + parcalar[1]);
+            toplamNot = toplamNot + Convert.ToInt32(parcalar[1]);
         }
+
+        double ortalama = (double)toplamNot / satirlar.Length;
+        Console.WriteLine("\nGenel Ortalama: " + ortalama);
     }
     else
     {
@@ -96,34 +97,5 @@ static void NotlariSil(string yol)
     else
     {
         Console.WriteLine("Silinecek herhangi bir not yok.");
-    }
-}
-
-static void OrtalamaGoster(string yol)
-{
-    if (File.Exists(yol))
-    {
-        string[] satirlar = File.ReadAllLines(yol);
-        
-        if (satirlar.Length == 0)
-        {
-            Console.WriteLine("Henüz girilen not bulunamadı.");
-            return;
-        }
-
-        int toplamNot = 0;
-        
-        for (int i = 0; i < satirlar.Length; i++)
-        {
-            string[] parcalar = satirlar[i].Split('|');
-            toplamNot = toplamNot + Convert.ToInt32(parcalar[1]);
-        }
-
-        double ortalama = (double)toplamNot / satirlar.Length;
-        Console.WriteLine("\nGenel Ortalama: " + ortalama);
-    }
-    else
-    {
-        Console.WriteLine("Henüz girilen not bulunamadı.");
     }
 }

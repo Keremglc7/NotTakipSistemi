@@ -1,94 +1,129 @@
-using System;
+﻿using System;
 using System.IO;
-using System.Collections.Generic;
 
-namespace NotTakipSistemi
+string dosyaYolu = "notlar.txt";
+
+while (true)
 {
-    class Program
+    Console.WriteLine("\n--- NOT TAKİP SİSTEMİ ---");
+    Console.WriteLine("1. Yeni Not Ekle");
+    Console.WriteLine("2. Notları Oku");
+    Console.WriteLine("3. Notları Temizle (Tümünü Sil)");
+    Console.WriteLine("4. Ortalama Göster");
+    Console.WriteLine("5. Çıkış");
+    Console.Write("Seçiminiz (1/2/3/4/5): ");
+
+    string secim = Console.ReadLine();
+
+    if (secim == "1")
     {
-        static string dosyaYolu = "notlar.txt";
+        NotEkle(dosyaYolu);
+    }
+    else if (secim == "2")
+    {
+        NotlariOku(dosyaYolu);
+    }
+    else if (secim == "3")
+    {
+        NotlariSil(dosyaYolu);
+    }
+    else if (secim == "4")
+    {
+        OrtalamaGoster(dosyaYolu);
+    }
+    else if (secim == "5")
+    {
+        Console.WriteLine("Sistemden çıkılıyor.");
+        break;
+    }
+    else
+    {
+        Console.WriteLine("Hatalı bir tuşa bastınız, tekrar deneyin.");
+    }
+}
 
-        static void Main(string[] args)
+static void NotEkle(string yol)
+{
+    Console.Write("Ders adı: ");
+    string dersAdi = Console.ReadLine();
+
+    Console.Write("Not: ");
+    int notDegeri = Convert.ToInt32(Console.ReadLine());
+
+    if (notDegeri < 0 || notDegeri > 100)
+    {
+        Console.WriteLine("Hata: Not 0 ile 100 arasında olmalıdır!");
+    }
+    else
+    {
+        File.AppendAllText(yol, dersAdi + "|" + notDegeri + Environment.NewLine);
+        Console.WriteLine("Not başarıyla eklendi.");
+    }
+}
+
+static void NotlariOku(string yol)
+{
+    if (File.Exists(yol))
+    {
+        string[] satirlar = File.ReadAllLines(yol);
+        
+        if (satirlar.Length == 0)
         {
-            bool calisiyor = true;
-
-            while (calisiyor)
-            {
-                Console.Clear();
-                Console.WriteLine("=== OĞRENCİ NOT TAKİP SİSTEMİ ===");
-                Console.WriteLine("1. Not Ekle");
-                Console.WriteLine("2. Notları Listele");
-                Console.WriteLine("3. Not Güncelle");
-                Console.WriteLine("4. Not Sil");
-                Console.WriteLine("5. Çıkış");
-                Console.Write("Seciminiz (1-5): ");
-
-                string secim = Console.ReadLine();
-
-                switch (secim)
-                {
-                    case "1":
-                        NotEkle();
-                        break;
-                    case "2":
-                        NotlariListele();
-                        break;
-                    case "3":
-                        NotGuncelle();
-                        break;
-                    case "4":
-                        NotSil();
-                        break;
-                    case "5":
-                        calisiyor = false;
-                        break;
-                    default:
-                        Console.WriteLine("Hatali secim yaptiniz.");
-                        break;
-                }
-
-                if (calisiyor)
-                {
-                    Console.WriteLine("\nDevam etmek icin bir tusa basin...");
-                    Console.ReadKey();
-                }
-            }
+            Console.WriteLine("Henüz girilen not bulunamadı.");
+            return;
         }
 
-        static void NotEkle()
+        Console.WriteLine("\n--- KAYITLI NOTLAR ---");
+        for (int i = 0; i < satirlar.Length; i++)
         {
-            Console.Clear();
-            Console.WriteLine("--- NOT EKLE ---");
-            Console.Write("Ogrenci Ad Soyad: ");
-            string adSoyad = Console.ReadLine();
-            Console.Write("Ders: ");
-            string ders = Console.ReadLine();
-            Console.Write("Not: ");
-            string not = Console.ReadLine();
+            string[] parcalar = satirlar[i].Split('|');
+            Console.WriteLine((i + 1) + "- Ders: " + parcalar[0] + " | Not: " + parcalar[1]);
+        }
+    }
+    else
+    {
+        Console.WriteLine("Henüz girilen not bulunamadı.");
+    }
+}
 
-            string kayit = $"{adSoyad},{ders},{not}";
+static void NotlariSil(string yol)
+{
+    if (File.Exists(yol))
+    {
+        File.Delete(yol);
+        Console.WriteLine("Tüm notlar başarıyla silindi.");
+    }
+    else
+    {
+        Console.WriteLine("Silinecek herhangi bir not yok.");
+    }
+}
 
-            try
-            {
-                File.AppendAllText(dosyaYolu, kayit + Environment.NewLine);
-                Console.WriteLine("Kayit basariyla eklendi.");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Hata: " + ex.Message);
-            }
+static void OrtalamaGoster(string yol)
+{
+    if (File.Exists(yol))
+    {
+        string[] satirlar = File.ReadAllLines(yol);
+        
+        if (satirlar.Length == 0)
+        {
+            Console.WriteLine("Henüz girilen not bulunamadı.");
+            return;
         }
 
-        static void NotlariListele()
+        int toplamNot = 0;
+        
+        for (int i = 0; i < satirlar.Length; i++)
         {
+            string[] parcalar = satirlar[i].Split('|');
+            toplamNot = toplamNot + Convert.ToInt32(parcalar[1]);
         }
 
-        static void NotGuncelle()
-        {
-        }
-
-        static void NotSil()
-        {
-        }
+        double ortalama = (double)toplamNot / satirlar.Length;
+        Console.WriteLine("\nGenel Ortalama: " + ortalama);
+    }
+    else
+    {
+        Console.WriteLine("Henüz girilen not bulunamadı.");
     }
 }
